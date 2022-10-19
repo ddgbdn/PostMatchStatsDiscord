@@ -1,15 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using PostMatchStatsDiscord.Models;
 using PostMatchStatsDiscord.Services;
 
 namespace PostMatchStatsDiscord.Tests
 {
-   
+    [TestFixture]
     internal class StratzServiceTest
     {
         delegate Task<MatchStats> StratzTest(long id);
@@ -30,8 +25,8 @@ namespace PostMatchStatsDiscord.Tests
         [Test]
         public void TestToken()
         {
-            var vars = System.Environment.GetEnvironmentVariables();
-            Assert.IsNotNull(System.Environment.GetEnvironmentVariable("StratzAuthToken"));
+            var vars = Environment.GetEnvironmentVariables();
+            Assert.IsNotNull(Environment.GetEnvironmentVariable("StratzAuthToken"));
         }
     }
 }

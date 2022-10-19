@@ -1,8 +1,5 @@
 ﻿namespace PostMatchStatsDiscord.Models
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Globalization;
     using System.Text.Json.Serialization;
 
     public class MatchData
