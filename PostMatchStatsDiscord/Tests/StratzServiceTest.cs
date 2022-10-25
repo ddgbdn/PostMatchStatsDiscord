@@ -7,18 +7,17 @@ namespace PostMatchStatsDiscord.Tests
     [TestFixture]
     internal class StratzServiceTest
     {
-        delegate Task<MatchStats> StratzTest(long id);
         [Test]
         public void DebugTest()
         {
-            Assert.DoesNotThrowAsync(() => StratzService.GetLastMatchAsync(6808030803));
+            Assert.DoesNotThrowAsync(() => new StratzService().GetMatchByIdAsync(6808030803));
         }
 
         [Test]
         public void DebugId()
         {
-            Assert.DoesNotThrowAsync(StratzService.GetLastMatchIdAsync);
-            var ids = StratzService.GetLastMatchIdAsync();
+            Assert.DoesNotThrowAsync(new StratzService().GetLastMatchIdAsync);
+            var ids = new StratzService().GetLastMatchIdAsync();
             Assert.GreaterOrEqual(ids.Result.Count(), 1);
         }
 

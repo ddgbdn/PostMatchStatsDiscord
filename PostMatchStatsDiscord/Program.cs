@@ -1,14 +1,10 @@
 ﻿using Discord;
 using Discord.WebSocket;
 
-
 public class Program
 {
     public static Task Main(string[] args)
-    {
-        var a = 0;
-        return new Program().MainAsync();
-    }
+        => new Program().MainAsync();
 
     private DiscordSocketClient _client;
 
@@ -18,9 +14,7 @@ public class Program
 
         _client.Log += Log;
 
-        var token = Environment.GetEnvironmentVariable("StratzDiscordBotToken");
-
-        await _client.LoginAsync(TokenType.Bot, token);
+        await _client.LoginAsync(TokenType.Bot, Environment.GetEnvironmentVariable("StratzDiscordBotToken"));
 
         await _client.StartAsync();
 

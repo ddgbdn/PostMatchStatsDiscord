@@ -6,17 +6,17 @@ using PostMatchStatsDiscord.Models;
 
 namespace PostMatchStatsDiscord.Services
 {
-    static class StratzService
+    public class StratzService
     {
-        private static GraphQLHttpClient client;
+        private GraphQLHttpClient client;
 
-        static StratzService()
+        public StratzService()
         {
             client = new GraphQLHttpClient("https://api.stratz.com/graphql", new SystemTextJsonSerializer());
             client.HttpClient.DefaultRequestHeaders.Add("Authorization", $"bearer {Environment.GetEnvironmentVariable("StratzAuthToken")}");
         }
 
-        public static async Task<IEnumerable<long>> GetLastMatchIdAsync()
+        public async Task<IEnumerable<long>> GetLastMatchIdAsync()
         {
             var idRequest = new GraphQLRequest
             {
@@ -36,7 +36,7 @@ namespace PostMatchStatsDiscord.Services
                 .Distinct();
         }
 
-        public static async Task<MatchStats> GetLastMatchAsync(long id)
+        public async Task<MatchStats> GetMatchByIdAsync(long id)
         {
             var statRequest = new GraphQLRequest
             {
@@ -44,7 +44,7 @@ namespace PostMatchStatsDiscord.Services
                 {{
                   match(id: {id}) {{
                     id
-                    parsedDateTime
+                    statsDateTime
                     didRadiantWin
                     durationSeconds
                     averageRank

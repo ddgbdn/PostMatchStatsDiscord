@@ -1,9 +1,4 @@
 ﻿using NUnit.Framework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using PostMatchStatsDiscord.Services;
 
 namespace PostMatchStatsDiscord.Tests
@@ -14,13 +9,13 @@ namespace PostMatchStatsDiscord.Tests
         [Test]
         public void DebugObtained()
         {
-            Assert.DoesNotThrowAsync(() => IdChecker.IsObtained(6808030803));
+            Assert.DoesNotThrowAsync(() => new IdChecker().IsObtained(6808030803));
         }
 
         [Test]
-        public void DebugNotParsed()
+        public void Checks()
         {
-            Assert.DoesNotThrowAsync(() => IdChecker.IsObtained(6808030803));
+            Assert.IsTrue(new IdChecker().IsObtained(1).Result);
         }
     }
 }

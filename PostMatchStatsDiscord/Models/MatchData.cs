@@ -13,7 +13,7 @@
         [JsonPropertyName("id")]
         public long Id { get; set; }
 
-        [JsonPropertyName("parsedDateTime")]
+        [JsonPropertyName("statsDateTime")]
         public long ParsedDateTime { get; set; }
 
         [JsonPropertyName("didRadiantWin")]
