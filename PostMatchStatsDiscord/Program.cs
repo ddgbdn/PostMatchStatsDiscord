@@ -1,5 +1,6 @@
 ﻿using Discord;
 using Discord.WebSocket;
+using PostMatchStatsDiscord.Services;
 
 public class Program
 {
@@ -17,6 +18,14 @@ public class Program
         await _client.LoginAsync(TokenType.Bot, Environment.GetEnvironmentVariable("StratzDiscordBotToken"));
 
         await _client.StartAsync();
+
+        _client.Ready += () =>
+        {
+            Console.WriteLine("Bot is connected!");
+            return Task.CompletedTask;
+        };
+
+        await new Processor().StartAsync();
 
         await Task.Delay(-1);
     }

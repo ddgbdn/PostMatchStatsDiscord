@@ -73,4 +73,10 @@
         [JsonPropertyName("name")]
         public string Name { get; set; }
     }
+
+    public class ParsedMatches
+    {
+        [JsonPropertyName("matches")]
+        public MatchStats[] Matches { get; set; }
+    }
 }
