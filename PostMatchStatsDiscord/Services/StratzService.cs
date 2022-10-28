@@ -62,6 +62,9 @@ namespace PostMatchStatsDiscord.Services
                       award
                       stats {{
                         actionsPerMinute
+                        killCount
+                        deathCount
+                        assistCount
                       }}
                     }}
                   }}

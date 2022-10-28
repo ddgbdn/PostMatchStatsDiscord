@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
+using PostMatchStatsDiscord.Constants;
 
 namespace PostMatchStatsDiscord.Services
 {
@@ -20,7 +21,8 @@ namespace PostMatchStatsDiscord.Services
         public async Task SendMessage()
         {
             var channel = await _client.GetChannelAsync(370233530346766338) as IMessageChannel;
-            await channel.SendMessageAsync()
+            using Stream fs = File.OpenRead(Paths.ButtPlug);
+            await channel.SendFileAsync(fs, "buttplug");
         }
     }
 }

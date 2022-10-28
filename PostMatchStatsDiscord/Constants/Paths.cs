@@ -13,5 +13,8 @@ namespace PostMatchStatsDiscord.Constants
 
         public static string NotParsedMatchesPath
             = Path.GetFullPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\Data\") + "NotParsedMatches.json");
+
+        public static string ButtPlug
+            = Path.GetFullPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\Data\") + "Buttplug.jpg");
     }
 }

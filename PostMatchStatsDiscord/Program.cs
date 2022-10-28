@@ -24,6 +24,7 @@ public class Program
             Console.WriteLine("Bot is connected!");
             return Task.CompletedTask;
         };
+        await new MessageService(_client).SendMessage();
 
         await new Processor().StartAsync();
 

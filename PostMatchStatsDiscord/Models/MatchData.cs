@@ -63,6 +63,15 @@
     {
         [JsonPropertyName("actionsPerMinute")]
         public long[] ActionsPerMinute { get; set; }
+
+        [JsonPropertyName("killCount")]
+        public int KillCount { get; set; }
+
+        [JsonPropertyName("deathCount")]
+        public int DeathCount { get; set; }
+
+        [JsonPropertyName("assistCount")]
+        public int AssistCount { get; set; }
     }
 
     public class SteamAccount
