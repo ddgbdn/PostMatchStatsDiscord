@@ -14,7 +14,7 @@ namespace PostMatchStatsDiscord.Tests
         [Test]
         public void DebugStartAsync()
         {
-            Assert.DoesNotThrowAsync(new Processor().StartAsync);
+           // Assert.DoesNotThrowAsync(new Processor().StartAsync);
         }
     }
 }

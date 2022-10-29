@@ -1,4 +1,5 @@
-﻿using PostMatchStatsDiscord.Constants;
+﻿using Discord.WebSocket;
+using PostMatchStatsDiscord.Constants;
 using PostMatchStatsDiscord.Models;
 
 namespace PostMatchStatsDiscord.Services
@@ -7,11 +8,13 @@ namespace PostMatchStatsDiscord.Services
     {
         private StratzService stratzService;
         private IdChecker idChecker;
+        private MessageService messageService;
 
-        public Processor()
+        public Processor(DiscordSocketClient client)
         {
             stratzService = new StratzService();
             idChecker = new IdChecker();
+            messageService = new MessageService(client);
         }
 
         public async Task StartAsync()
@@ -20,6 +23,8 @@ namespace PostMatchStatsDiscord.Services
             {
                 ProcessIdsAsync();
                 var matches = await ProcessMatchesAsync();
+                foreach (var match in matches)
+                    await messageService.SendMessage(match);
                 Thread.Sleep(10000);
             }
         }

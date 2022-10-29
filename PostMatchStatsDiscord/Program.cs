@@ -19,14 +19,11 @@ public class Program
 
         await _client.StartAsync();
 
-        _client.Ready += () =>
+        _client.Ready += async () =>
         {
             Console.WriteLine("Bot is connected!");
-            return Task.CompletedTask;
-        };
-        await new MessageService(_client).SendMessage();
-
-        await new Processor().StartAsync();
+            await new Processor(_client).StartAsync();
+        };       
 
         await Task.Delay(-1);
     }

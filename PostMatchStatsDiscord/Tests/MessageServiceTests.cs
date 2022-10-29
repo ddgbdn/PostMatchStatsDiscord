@@ -13,10 +13,15 @@ namespace PostMatchStatsDiscord.Tests
     [TestFixture]
     class MessageServiceTests
     {
-        [Test]
-        public async Task ButtPlugTest()
+        DiscordSocketClient _client;
+        MessageService _service;
+
+        [SetUp]
+        public async Task Init()
         {
-            var _client = new DiscordSocketClient();
+            _client = new DiscordSocketClient();
+
+            _client.Log += Log;
 
             await _client.LoginAsync(TokenType.Bot, Environment.GetEnvironmentVariable("StratzDiscordBotToken"));
 
@@ -27,7 +32,25 @@ namespace PostMatchStatsDiscord.Tests
                 Console.WriteLine("Bot is connected!");
                 return Task.CompletedTask;
             };
-            Assert.DoesNotThrowAsync(new MessageService(_client).SendMessage);
+
+            _service = new MessageService(_client);
+        }
+
+        [Test]
+        public async Task ButtPlugTest()
+        {               
+            //Assert.DoesNotThrowAsync(_service.SendMessage);
+        }
+
+        public async Task IconsTest()
+        {
+           // Assert.DoesNotThrowAsync(_service.SendMessage);
+        }
+
+        private Task Log(LogMessage msg)
+        {
+            Console.WriteLine(msg.ToString());
+            return Task.CompletedTask;
         }
     }
 }
