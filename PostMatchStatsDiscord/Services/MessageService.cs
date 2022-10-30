@@ -35,29 +35,31 @@ namespace PostMatchStatsDiscord.Services
 
             var radiant = match.Players
                 .Where(p => p.IsRadiant)
+                .OrderBy(x => int.Parse(x.Position.Substring(x.Position.Length - 1, 1)))
                 .ToArray();
             var dire = match.Players
                 .Where(p => !p.IsRadiant)
+                .OrderBy(x => int.Parse(x.Position.Substring(x.Position.Length - 1, 1)))
                 .ToArray();
 
             embed.AddField($"`                    {radiant.Select(x => x.Stats.KillCount).Sum()}` - " + GetEmote("Radiant"), "‎ ", true);
             embed.AddField($"` {match.DurationSeconds / 60}:{match.DurationSeconds % 60} `", "‎ ", true);
-            embed.AddField($"`                    {dire.Select(x => x.Stats.KillCount).Sum()}` - " + GetEmote("Dire"), "‎ ", true);
+            embed.AddField(GetEmote("Dire") + " - " + $"`{dire.Select(x => x.Stats.KillCount).Sum()}                     `", "‎ ", true);
 
             for (int i = 0; i < radiant.Length; i++)
             {
                 embed.AddField(
                     GetEmote(GetRole(radiant[i].Position)) + " - " 
-                    + GetEmote(radiant[i].Hero.DisplayName.Trim()) 
-                    + $" {radiant[i].SteamAccount.Name}",
+                    + GetEmote(radiant[i].Hero.DisplayName.Replace(" ", "")) 
+                    + $" {(radiant[i].SteamAccount.Name.Length > 15 ? radiant[i].SteamAccount.Name.Substring(15) : radiant[i].SteamAccount.Name)}",
                     GetStats(radiant[i]), true);
 
                 embed.AddField("‎ ", "‎ ", true);
 
                 embed.AddField(
                     GetEmote(GetRole(dire[i].Position)) + " - "
-                    + GetEmote(dire[i].Hero.DisplayName.Trim())
-                    + $" {dire[i].SteamAccount.Name}",
+                    + GetEmote(dire[i].Hero.DisplayName.Replace(" ", ""))
+                    + $" {(dire[i].SteamAccount.Name.Length > 15 ? dire[i].SteamAccount.Name.Substring(15) : dire[i].SteamAccount.Name)}",
                     GetStats(dire[i]), true);
             }
 
@@ -67,7 +69,7 @@ namespace PostMatchStatsDiscord.Services
                     GetEmote("MVP") + " - "
                     + GetEmote(match.Players
                         .Where(p => p.Award == "MVP")
-                        .Select(p => p.Hero.DisplayName.Trim())
+                        .Select(p => p.Hero.DisplayName.Replace(" ", ""))
                         .Single()))
                 .WithIsInline(true);
 
@@ -77,7 +79,7 @@ namespace PostMatchStatsDiscord.Services
                     GetEmote("TopCore") + " - "
                     + GetEmote(match.Players
                         .Where(p => p.Award == "TOP_CORE")
-                        .Select(p => p.Hero.DisplayName.Trim())
+                        .Select(p => p.Hero.DisplayName.Replace(" ", ""))
                         .Single()))
                 .WithIsInline(true);
 
@@ -87,22 +89,23 @@ namespace PostMatchStatsDiscord.Services
                     GetEmote("TopSupport") + " - "
                     + GetEmote(match.Players
                         .Where(p => p.Award == "TOP_SUPPORT")
-                        .Select(p => p.Hero.DisplayName.Trim())
+                        .Select(p => p.Hero.DisplayName.Replace(" ", ""))
                         .Single()))
                 .WithIsInline(true);
 
-            embed.Footer = new EmbedFooterBuilder().WithText("powered by Stratz");
+            embed.Footer = new EmbedFooterBuilder().WithText("\npowered by Stratz");
 
             return embed.Build();
         }
 
         private string GetStats(Player player)
         {
-            var kills = player.Stats.KillCount.ToString().PadRight(2);
-            var deaths = player.Stats.DeathCount.ToString().PadRight(2);
-            var assists = player.Stats.AssistCount.ToString().PadRight(2);
+            var kills = player.Stats.KillCount.ToString().PadLeft(2);
+            var deaths = player.Stats.DeathCount.ToString().PadLeft(2);
+            var assists = player.Stats.AssistCount.ToString().PadLeft(2);
+            var imp = player.Imp.ToString().PadLeft(3);
 
-            return $"` {kills}/{deaths}/{assists} imp: {player.Imp} apm: {(int)player.Stats.ActionsPerMinute.Average()} `";
+            return $"`{kills}/{deaths}/{assists} imp:{imp} apm: {(int)player.Stats.ActionsPerMinute.Average()} `";
         }
 
         private string GetRole(string pos)

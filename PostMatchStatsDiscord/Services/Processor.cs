@@ -53,11 +53,11 @@ namespace PostMatchStatsDiscord.Services
 
             await JsonIO.DeleteNotParsedIdsAsync(
                 matches
-                .Where(match => match.ParsedDateTime == 0)
+                .Where(match => match.ParsedDateTime is not null)
                 .Select(m => m.Id));
 
             return matches
-                .Where(match => match.ParsedDateTime != 0)
+                .Where(match => match.ParsedDateTime is not null)
                 .ToList();
         }
     }

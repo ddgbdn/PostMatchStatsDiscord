@@ -14,7 +14,7 @@
         public long Id { get; set; }
 
         [JsonPropertyName("statsDateTime")]
-        public long ParsedDateTime { get; set; }
+        public long? ParsedDateTime { get; set; }
 
         [JsonPropertyName("didRadiantWin")]
         public bool DidRadiantWin { get; set; }
@@ -44,7 +44,7 @@
         public string Position { get; set; }
 
         [JsonPropertyName("imp")]
-        public long Imp { get; set; }
+        public long? Imp { get; set; }
 
         [JsonPropertyName("award")]
         public string Award { get; set; }
@@ -65,13 +65,13 @@
         public long[] ActionsPerMinute { get; set; }
 
         [JsonPropertyName("killCount")]
-        public int KillCount { get; set; }
+        public int? KillCount { get; set; }
 
         [JsonPropertyName("deathCount")]
-        public int DeathCount { get; set; }
+        public int? DeathCount { get; set; }
 
         [JsonPropertyName("assistCount")]
-        public int AssistCount { get; set; }
+        public int? AssistCount { get; set; }
     }
 
     public class SteamAccount
