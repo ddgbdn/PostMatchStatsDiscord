@@ -29,6 +29,7 @@ namespace PostMatchStatsDiscord.Services
                   }}
                 }}"
             };
+
             var response = await client.SendQueryAsync<IdData>(idRequest);
             return response.Data.Players
                 .SelectMany(x => x.Matches)
@@ -70,8 +71,8 @@ namespace PostMatchStatsDiscord.Services
                   }}
                 }}"
             };
-            var response = await client.SendQueryAsync<MatchData>(statRequest);
-            return response.Data.Match;
+
+            return client.SendQueryAsync<MatchData>(statRequest).Result.Data.Match;
         }
     }
 }

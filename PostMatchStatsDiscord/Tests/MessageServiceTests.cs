@@ -42,11 +42,6 @@ namespace PostMatchStatsDiscord.Tests
             //Assert.DoesNotThrowAsync(_service.SendMessage);
         }
 
-        public async Task IconsTest()
-        {
-           // Assert.DoesNotThrowAsync(_service.SendMessage);
-        }
-
         private Task Log(LogMessage msg)
         {
             Console.WriteLine(msg.ToString());

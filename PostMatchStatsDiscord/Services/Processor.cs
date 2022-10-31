@@ -25,7 +25,7 @@ namespace PostMatchStatsDiscord.Services
                 var matches = await ProcessMatchesAsync();
                 foreach (var match in matches)
                     await messageService.SendMessage(match);
-                Thread.Sleep(10000);
+                Thread.Sleep(12000);
             }
         }
 
@@ -44,6 +44,7 @@ namespace PostMatchStatsDiscord.Services
         private async Task<List<MatchStats>> ProcessMatchesAsync()
         {
             var matchesToParse = await JsonIO.ReadJsonAsync<IdHash>(Paths.NotParsedMatchesPath);
+
             if (!matchesToParse.Ids.Any())
                 return new List<MatchStats>();
 

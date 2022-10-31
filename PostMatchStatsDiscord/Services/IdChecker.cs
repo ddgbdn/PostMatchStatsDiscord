@@ -1,8 +1,5 @@
-﻿using System.Text.Json;
-using System.Text.Json.Serialization;
+﻿using PostMatchStatsDiscord.Constants;
 using PostMatchStatsDiscord.Models;
-using PostMatchStatsDiscord.Constants;
-using PostMatchStatsDiscord.Services;
 
 namespace PostMatchStatsDiscord.Services
 {

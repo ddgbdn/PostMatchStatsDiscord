@@ -1,17 +1,11 @@
 ﻿using PostMatchStatsDiscord.Constants;
 using PostMatchStatsDiscord.Models;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
 using System.Text.Json;
-using System.Threading.Tasks;
 
 namespace PostMatchStatsDiscord.Services
 {
     public static class JsonIO
-    {   
+    {
         public static async Task<T> ReadJsonAsync<T>(string path)
         {
             using FileStream stream = File.OpenRead(path);

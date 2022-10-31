@@ -1,12 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Discord;
+﻿using Discord;
 using Discord.WebSocket;
-using NUnit.Framework.Constraints;
-using PostMatchStatsDiscord.Constants;
 using PostMatchStatsDiscord.Models;
 
 namespace PostMatchStatsDiscord.Services
@@ -15,15 +8,12 @@ namespace PostMatchStatsDiscord.Services
     {
         private DiscordSocketClient _client;
 
-        public MessageService(DiscordSocketClient client)
-        {
-            _client = client;
-        }
+        public MessageService(DiscordSocketClient client) => _client = client;
+
 
         public async Task SendMessage(MatchStats match)
         {
             var channel = await _client.GetChannelAsync(370233530346766338) as IMessageChannel;
-
             await channel.SendMessageAsync(embed: GetEmbed(match));
         }
 
@@ -48,54 +38,40 @@ namespace PostMatchStatsDiscord.Services
 
             for (int i = 0; i < radiant.Length; i++)
             {
-                embed.AddField(
-                    GetEmote(GetRole(radiant[i].Position)) + " - " 
-                    + GetEmote(radiant[i].Hero.DisplayName.Replace(" ", "")) 
-                    + $" {(radiant[i].SteamAccount.Name.Length > 15 ? radiant[i].SteamAccount.Name.Substring(15) : radiant[i].SteamAccount.Name)}",
-                    GetStats(radiant[i]), true);
-
+                AddStatsField(embed, radiant[i]);
                 embed.AddField("‎ ", "‎ ", true);
-
-                embed.AddField(
-                    GetEmote(GetRole(dire[i].Position)) + " - "
-                    + GetEmote(dire[i].Hero.DisplayName.Replace(" ", ""))
-                    + $" {(dire[i].SteamAccount.Name.Length > 15 ? dire[i].SteamAccount.Name.Substring(15) : dire[i].SteamAccount.Name)}",
-                    GetStats(dire[i]), true);
+                AddStatsField(embed, dire[i]);
             }
 
-            embed.Fields[7] = new EmbedFieldBuilder()
-                .WithName("‎ ")
-                .WithValue(
-                    GetEmote("MVP") + " - "
-                    + GetEmote(match.Players
-                        .Where(p => p.Award == "MVP")
-                        .Select(p => p.Hero.DisplayName.Replace(" ", ""))
-                        .Single()))
-                .WithIsInline(true);
-
-            embed.Fields[10] = new EmbedFieldBuilder()
-                .WithName("‎ ")
-                .WithValue(
-                    GetEmote("TopCore") + " - "
-                    + GetEmote(match.Players
-                        .Where(p => p.Award == "TOP_CORE")
-                        .Select(p => p.Hero.DisplayName.Replace(" ", ""))
-                        .Single()))
-                .WithIsInline(true);
-
-            embed.Fields[13] = new EmbedFieldBuilder()
-                .WithName("‎ ")
-                .WithValue(
-                    GetEmote("TopSupport") + " - "
-                    + GetEmote(match.Players
-                        .Where(p => p.Award == "TOP_SUPPORT")
-                        .Select(p => p.Hero.DisplayName.Replace(" ", ""))
-                        .Single()))
-                .WithIsInline(true);
+            AddRewardField(embed, match, "MVP", 7);
+            AddRewardField(embed, match, "TOP_CORE", 10);
+            AddRewardField(embed, match, "TOP_SUPPORT", 13);
 
             embed.Footer = new EmbedFooterBuilder().WithText("\npowered by Stratz");
 
             return embed.Build();
+        }
+
+        private void AddStatsField(EmbedBuilder embed, Player player)
+        {
+            embed.AddField(
+                    GetEmote(GetRole(player.Position)) + " - "
+                    + GetEmote(player.Hero.DisplayName)
+                    + $" {(player.SteamAccount.Name.Length > 15 ? player.SteamAccount.Name.Substring(15) : player.SteamAccount.Name)}",
+                    GetStats(player), true);
+        }
+
+        private void AddRewardField(EmbedBuilder embed, MatchStats match, string reward, int index)
+        {
+            embed.Fields[index] = new EmbedFieldBuilder()
+                .WithName("‎ ")
+                .WithValue(
+                    GetEmote(reward.Replace("_", "")) + " - "
+                    + GetEmote(match.Players
+                        .Where(p => p.Award == reward)
+                        .Select(p => p.Hero.DisplayName)
+                        .Single()))
+                .WithIsInline(true);
         }
 
         private string GetStats(Player player)
@@ -122,16 +98,15 @@ namespace PostMatchStatsDiscord.Services
                     return "Soft";
                 case "POSITION_5":
                     return "Hard";
-                default: 
+                default:
                     return "Kapets";
             }
         }
 
-        private GuildEmote? GetEmote(string emoteName) 
+        private GuildEmote? GetEmote(string emoteName)
             => _client.Guilds
                 .SelectMany(x => x.Emotes)
                 .FirstOrDefault(x => x.Name.IndexOf(
-                    emoteName, StringComparison.OrdinalIgnoreCase) != -1);
-        
+                    emoteName.Replace(" ", ""), StringComparison.OrdinalIgnoreCase) != -1);
     }
 }
