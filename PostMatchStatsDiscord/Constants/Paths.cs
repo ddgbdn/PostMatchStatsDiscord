@@ -9,10 +9,10 @@ namespace PostMatchStatsDiscord.Constants
     public static class Paths
     {
         public static string ObtainedMathesPath 
-            = Path.GetFullPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\Data\") + "ObtainedMatches.json");
+            = @"D:\StratzPostMatch\Data\ObtainedMatches.json";
 
         public static string NotParsedMatchesPath
-            = Path.GetFullPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\Data\") + "NotParsedMatches.json");
+            = @"D:\StratzPostMatch\Data\NotParsedMatches.json";
 
         public static string ButtPlug
             = Path.GetFullPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\Data\") + "Buttplug.jpg");

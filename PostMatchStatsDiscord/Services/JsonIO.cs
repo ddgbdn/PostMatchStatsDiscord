@@ -8,6 +8,8 @@ namespace PostMatchStatsDiscord.Services
     {
         public static async Task<T> ReadJsonAsync<T>(string path)
         {
+            if (!File.Exists(path))
+                File.AppendAllText(path, "{\"ids\":[]}");
             using FileStream stream = File.OpenRead(path);
             return await JsonSerializer.DeserializeAsync<T>(stream);
         }

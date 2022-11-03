@@ -31,13 +31,14 @@ namespace PostMatchStatsDiscord.Services
 
         private async void ProcessIdsAsync()
         {
-            var newIds = stratzService.GetLastMatchIdAsync().Result
-                    .Where(id => !idChecker.IsObtained(id).Result);
+            var newIds = (await stratzService.GetLastMatchIdAsync())
+                    .Where(id => !idChecker.IsObtained(id).Result)
+                    .ToList();
 
             if (newIds.Any())
             {
-                await JsonIO.AddIdsAsync(Paths.ObtainedMathesPath, newIds);
                 await JsonIO.AddIdsAsync(Paths.NotParsedMatchesPath, newIds);
+                await JsonIO.AddIdsAsync(Paths.ObtainedMathesPath, newIds);
             }
         }
 
