@@ -33,7 +33,7 @@ namespace PostMatchStatsDiscord.Services
                 .ToArray();
 
             embed.AddField($"`                    {radiant.Select(x => x.Stats.KillCount).Sum()}` - " + GetEmote("Radiant"), "‎ ", true);
-            embed.AddField($"` {match.DurationSeconds / 60}:{match.DurationSeconds % 60} `", "‎ ", true);
+            embed.AddField($"` {match.DurationSeconds / 60}:{(match.DurationSeconds % 60).ToString().PadLeft(2, '0')} `", "‎ ", true);
             embed.AddField(GetEmote("Dire") + " - " + $"`{dire.Select(x => x.Stats.KillCount).Sum()}                     `", "‎ ", true);
 
             for (int i = 0; i < radiant.Length; i++)
@@ -107,6 +107,6 @@ namespace PostMatchStatsDiscord.Services
             => _client.Guilds
                 .SelectMany(x => x.Emotes)
                 .FirstOrDefault(x => x.Name.IndexOf(
-                    emoteName.Replace(" ", ""), StringComparison.OrdinalIgnoreCase) != -1);
+                    emoteName.Replace(" ", "").Replace("-", ""), StringComparison.OrdinalIgnoreCase) != -1);
     }
 }
