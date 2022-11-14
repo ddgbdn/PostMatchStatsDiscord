@@ -6,9 +6,9 @@ namespace PostMatchStatsDiscord.Services
 {
     internal class Processor
     {
-        private StratzService stratzService;
-        private IdChecker idChecker;
-        private MessageService messageService;
+        private readonly StratzService stratzService;
+        private readonly IdChecker idChecker;
+        private readonly MessageService messageService;
 
         public Processor(DiscordSocketClient client)
         {
@@ -21,7 +21,7 @@ namespace PostMatchStatsDiscord.Services
         {
             while (true)
             {
-                ProcessIdsAsync();
+                await ProcessIdsAsync();
                 var matches = await ProcessMatchesAsync();
                 foreach (var match in matches)
                     await messageService.SendMessage(match);
@@ -29,7 +29,7 @@ namespace PostMatchStatsDiscord.Services
             }
         }
 
-        private async void ProcessIdsAsync()
+        private async Task ProcessIdsAsync()
         {
             var newIds = (await stratzService.GetLastMatchIdAsync())
                     .Where(id => !idChecker.IsObtained(id).Result)

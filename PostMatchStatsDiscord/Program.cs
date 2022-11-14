@@ -31,6 +31,7 @@ public class Program
     private Task Log(LogMessage msg)
     {
         Console.WriteLine(msg.ToString());
+        File.AppendAllText(@"D:\StratzPostMatch\Log", $"{DateTime.UtcNow} {msg.Severity} {msg.Exception} {msg.Message} {msg.Source} \n");
         return Task.CompletedTask;
     }
 }

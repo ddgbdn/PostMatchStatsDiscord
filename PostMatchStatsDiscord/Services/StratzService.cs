@@ -72,7 +72,7 @@ namespace PostMatchStatsDiscord.Services
                 }}"
             };
 
-            return client.SendQueryAsync<MatchData>(statRequest).Result.Data.Match;
+            return (await client.SendQueryAsync<MatchData>(statRequest)).Data.Match;
         }
     }
 }
