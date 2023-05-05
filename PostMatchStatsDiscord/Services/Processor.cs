@@ -19,6 +19,12 @@ namespace PostMatchStatsDiscord.Services
 
         public async Task StartAsync()
         {
+            var timer = new PeriodicTimer(TimeSpan.FromMinutes(1));
+
+            while (await timer.WaitForNextTickAsync())
+            {
+
+            }
             while (true)
             {
                 await ProcessIdsAsync();
