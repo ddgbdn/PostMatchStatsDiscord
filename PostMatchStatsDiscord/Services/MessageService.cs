@@ -11,9 +11,9 @@ namespace PostMatchStatsDiscord.Services
         public MessageService(DiscordSocketClient client) => _client = client;
 
 
-        public async Task SendMessage(MatchStats match)
+        public async Task SendMessage(MatchStats match, long channelId)
         {
-            var channel = await _client.GetChannelAsync(370233530346766338) as IMessageChannel;
+            var channel = await _client.GetChannelAsync(channelId) as IMessageChannel;
             await channel.SendMessageAsync(embed: GetEmbed(match));
         }
 
