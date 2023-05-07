@@ -9,6 +9,6 @@ namespace Contracts
 {
     public interface IMessageService
     {
-        public Task SendMessage(MatchStats match, long channelId);
+        public Task SendMessage(MatchStats match, ulong channelId);
     }
 }

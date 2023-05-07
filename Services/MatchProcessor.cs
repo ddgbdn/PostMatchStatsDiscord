@@ -3,6 +3,7 @@ using Discord.Addons.Hosting;
 using Discord.Addons.Hosting.Util;
 using Discord.Commands;
 using Discord.WebSocket;
+using Entities.Models;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -36,15 +37,32 @@ namespace Services
         {
             await Client.WaitForReadyAsync(stoppingToken);
 
-            using PeriodicTimer timer = new(TimeSpan.FromSeconds(1));
+            using PeriodicTimer timer = new(TimeSpan.FromMinutes(1));
 
             while (await timer.WaitForNextTickAsync(stoppingToken))
             {
-                var matchesToProcess = await _stratzClient.GetLastMatchesIdsAsync();
-                var matchesToPost = await Task.WhenAll(
-                    matchesToProcess.Select(async m => await _stratzClient.GetMatchByIdAsync(m)));
+                var channelMatchesToProcess = await _stratzClient.GetLastMatchesIdsAsync(
+                    new ChannelSubscribers[] 
+                    {
+                        new ChannelSubscribers 
+                        {
+                            ChannelId = 1104500906621415606, 
+                            Subscribers = new long[] { 236888270 } 
+                        } 
+                    }); // Fill with actual data
 
-                matchesToPost.Select(m => _messageService.SendMessage(m, 1104500906621415606)); //To enter id corresponding to guild
+                var matchesToPost = await Task.WhenAll(
+                    channelMatchesToProcess
+                        .Select(async c => new ChannelMatches
+                        {
+                            ChannelId = c.ChannelId,
+                            Matches = await Task.WhenAll(c.Matches
+                                .Select(async m => await _stratzClient.GetMatchByIdAsync(m)))
+                        }));
+
+                await Task.WhenAll(matchesToPost
+                    .Select(async c => await Task.WhenAll(c.Matches
+                        .Select(async m => await _messageService.SendMessage(m, c.ChannelId)))));
             }
 
             while (!stoppingToken.IsCancellationRequested)

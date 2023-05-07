@@ -1,23 +1,34 @@
-﻿using Discord;
+﻿using Contracts;
+using Discord;
 using Discord.WebSocket;
-using PostMatchStatsDiscord.Models;
+using Entities.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace PostMatchStatsDiscord.Services
+namespace Services
 {
-    public class MessageService
+    public class MessageService : IMessageService
     {
-        private DiscordSocketClient _client;
+        private readonly DiscordSocketClient _client;
 
-        public MessageService(DiscordSocketClient client) => _client = client;
-
-
-        public async Task SendMessage(MatchStats match, long channelId)
+        public MessageService(DiscordSocketClient client)
         {
-            //var channel = await _client.GetChannelAsync(channelId) as IMessageChannel;
-            //await channel.SendMessageAsync(embed: GetEmbed(match));
+            _client = client;
         }
 
-        private Embed GetEmbed(MatchStats match)
+        public async Task SendMessage(MatchStats match, ulong channelId)
+        {
+            var channel = await _client.GetChannelAsync(channelId) as IMessageChannel;
+            if (channel is null)
+                return;
+
+            await channel.SendMessageAsync(embed: BuildEmbed(match));
+        }
+
+        private Embed BuildEmbed(MatchStats match)
         {
             var embed = new EmbedBuilder();
 
@@ -32,9 +43,9 @@ namespace PostMatchStatsDiscord.Services
                 .OrderBy(x => int.Parse(x.Position.Substring(x.Position.Length - 1, 1)))
                 .ToArray();
 
-            embed.AddField($"`                    {radiant.Select(x => x.Stats.KillCount).Sum()}` - " + GetEmote("Radiant"), "‎ ", true);
+            embed.AddField($"`                    {radiant.Select(x => x.Kills).Sum()}` - " + GetEmote("Radiant"), "‎ ", true);
             embed.AddField($"` {match.DurationSeconds / 60}:{(match.DurationSeconds % 60).ToString().PadLeft(2, '0')} `", "‎ ", true);
-            embed.AddField(GetEmote("Dire") + " - " + $"`{dire.Select(x => x.Stats.KillCount).Sum()}                     `", "‎ ", true);
+            embed.AddField(GetEmote("Dire") + " - " + $"`{dire.Select(x => x.Kills).Sum()}                     `", "‎ ", true);
 
             for (int i = 0; i < radiant.Length; i++)
             {
@@ -76,9 +87,9 @@ namespace PostMatchStatsDiscord.Services
 
         private string GetStats(Player player)
         {
-            var kills = player.Stats.KillCount.ToString().PadLeft(2);
-            var deaths = player.Stats.DeathCount.ToString().PadLeft(2);
-            var assists = player.Stats.AssistCount.ToString().PadLeft(2);
+            var kills = player.Kills.ToString().PadLeft(2);
+            var deaths = player.Deaths.ToString().PadLeft(2);
+            var assists = player.Assists.ToString().PadLeft(2);
             var imp = player.Imp.ToString().PadLeft(3);
 
             return $"`{kills}/{deaths}/{assists} imp:{imp} apm: {(int)player.Stats.ActionsPerMinute.Average()} `";
@@ -110,3 +121,4 @@ namespace PostMatchStatsDiscord.Services
                     emoteName.Replace(" ", "").Replace("-", ""), StringComparison.OrdinalIgnoreCase) != -1);
     }
 }
+

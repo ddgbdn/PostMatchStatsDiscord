@@ -9,7 +9,7 @@ namespace Contracts
 {
     public interface IStratzClient
     {
-        public Task<IEnumerable<long>> GetLastMatchesIdsAsync();
+        public Task<IEnumerable<ChannelMatchesIds>> GetLastMatchesIdsAsync(IEnumerable<ChannelSubscribers> subs);
         public Task<MatchStats> GetMatchByIdAsync(long id);
     }
 }

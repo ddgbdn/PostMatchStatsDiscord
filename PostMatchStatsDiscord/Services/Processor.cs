@@ -29,8 +29,8 @@ namespace PostMatchStatsDiscord.Services
             {
                 await ProcessIdsAsync();
                 var matches = await ProcessMatchesAsync();
-                foreach (var match in matches)
-                    await messageService.SendMessage(match);
+                //foreach (var match in matches)
+                    //await messageService.SendMessage(match);
                 Thread.Sleep(12000);
             }
         }

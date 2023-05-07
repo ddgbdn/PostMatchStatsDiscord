@@ -7,6 +7,8 @@ using GraphQL.Client.Serializer.SystemTextJson;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Sockets;
+using System.Reflection.Metadata.Ecma335;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -14,22 +16,23 @@ namespace Services
 {
     public class StratzClient : IStratzClient
     {
-        private GraphQLHttpClient client;
+        private readonly GraphQLHttpClient _client;
 
         public StratzClient()
         {
-            client = new GraphQLHttpClient("https://api.stratz.com/graphql", new SystemTextJsonSerializer());
-            client.HttpClient.DefaultRequestHeaders.Add(
+            _client = new GraphQLHttpClient("https://api.stratz.com/graphql", new SystemTextJsonSerializer());
+            _client.HttpClient.DefaultRequestHeaders.Add(
                 "Authorization", $"bearer {Environment.GetEnvironmentVariable("StratzAuthToken")}");
         }
 
-        public async Task<IEnumerable<long>> GetLastMatchesIdsAsync()
+        public async Task<IEnumerable<ChannelMatchesIds>> GetLastMatchesIdsAsync(IEnumerable<ChannelSubscribers> subs)
         {
             var idRequest = new GraphQLRequest
             {
                 Query = $@"
                 query GetLastPlayersMathes($playerIds: [Long]!){{
                   players(steamAccountIds: $playerIds){{
+                    steamAccountId
                     matches(request: {{take: 1}}){{
                       id
                       statsDateTime
@@ -38,21 +41,25 @@ namespace Services
                 }}",
                 Variables = new
                 {
-                    playerIds = new long[] { 236888270 } // To fill with subscribed ids
+                    playerIds = subs.SelectMany(i => i.Subscribers).Distinct() // To fill with subscribed ids
                 }
             };
+            var response = await _client.SendQueryAsync<PreflightMatchId>(idRequest);
 
-            // TEMP
-            // Player Ids with corresponding Guild Ids
-            // Group by guild id and return tuple with needed channel id
+            var matchWithPlayer = response.Data.Players
+                .SelectMany(p => p.Matches
+                    .Where(m => m.ParsedDateTime is not null)
+                    .Select(m => new { matchId = m.Id, playerId = p.SteamAccountId }));
 
-            var response = await client.SendQueryAsync<PreflightMatchId>(idRequest);
-
-            return response.Data.Players
-                .SelectMany(p => p.Matches)
-                .Where(m => m.ParsedDateTime is not null)
-                .Select(m => m.Id)
-                .Distinct();
+            return subs.Select(s => 
+                new ChannelMatchesIds
+                {
+                    ChannelId = s.ChannelId,
+                    Matches = matchWithPlayer
+                        .Where(m => s.Subscribers.Contains(m.playerId))
+                        .Select(m => m.matchId)
+                        .Distinct()
+                });
         }
 
         public async Task<MatchStats> GetMatchByIdAsync(long id)
@@ -61,7 +68,7 @@ namespace Services
             {
                 Query = $@"
                 query GetMatchByIdAsync($matchId: Long!)    {{
-                    match(id: 7137605986) {{
+                    match(id: $matchId) {{
                         id
                         statsDateTime
                         didRadiantWin
@@ -100,7 +107,7 @@ namespace Services
                 }
             };
 
-            return (await client.SendQueryAsync<MatchData>(statRequest)).Data.Match;
+            return (await _client.SendQueryAsync<MatchData>(statRequest)).Data.Match;
         }
     }
 }

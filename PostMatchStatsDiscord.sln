@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.3.32825.248
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PostMatchStatsDiscord", "PostMatchStatsDiscord\PostMatchStatsDiscord.csproj", "{C84DF044-AF5E-440D-9C7A-B57E2F63DB23}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Entities", "Entities\Entities.csproj", "{6748E10C-525F-424D-81CA-E7A983BFDC7C}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Services", "Services\Services.csproj", "{A5E0B595-356A-4613-8714-0337712C8C41}"
@@ -19,10 +17,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{C84DF044-AF5E-440D-9C7A-B57E2F63DB23}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C84DF044-AF5E-440D-9C7A-B57E2F63DB23}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C84DF044-AF5E-440D-9C7A-B57E2F63DB23}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C84DF044-AF5E-440D-9C7A-B57E2F63DB23}.Release|Any CPU.Build.0 = Release|Any CPU
 		{6748E10C-525F-424D-81CA-E7A983BFDC7C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{6748E10C-525F-424D-81CA-E7A983BFDC7C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6748E10C-525F-424D-81CA-E7A983BFDC7C}.Release|Any CPU.ActiveCfg = Release|Any CPU

@@ -15,6 +15,9 @@ namespace Entities.Models
 
     public class PlayerSteam
     {
+        [JsonPropertyName("steamAccountId")]
+        public long SteamAccountId { get; set; }
+
         [JsonPropertyName("matches")]
         public Match[] Matches { get; set; }
     }

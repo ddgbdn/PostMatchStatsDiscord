@@ -37,7 +37,7 @@ namespace Entities.Models
         public string Position { get; set; } = null!;
 
         [JsonPropertyName("imp")]
-        public long? Imp { get; set; }
+        public long Imp { get; set; }
 
         [JsonPropertyName("award")]
         public string Award { get; set; } = null!;

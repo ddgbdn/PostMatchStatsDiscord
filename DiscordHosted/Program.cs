@@ -28,7 +28,9 @@ var host = Host.CreateDefaultBuilder(args)
         //services.AddHostedService<InteractionHandler>();
         //services.AddHostedService<BotStatusService>();
         //services.AddHostedService<LongRunningService>();
-        services.AddScoped<IStratzClient, StratzClient>();
+        services.AddHostedService<MatchProcessor>();
+        services.AddSingleton<IStratzClient, StratzClient>();
+        services.AddSingleton<IMessageService, MessageService>();
     }).Build();
 
 await host.RunAsync();
