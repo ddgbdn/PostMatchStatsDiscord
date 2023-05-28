@@ -60,7 +60,7 @@ namespace Services
         private void AddHeaderFilds(EmbedBuilder embed, MatchStats match, Player[] radiant, Player[] dire)
         {
             embed.AddField(
-                match.DidRadiantWin ? "`WIN" : "`"
+                (match.DidRadiantWin ? "`WIN" : "`")
                 + radiant.Sum(p => p.Kills).ToString().PadLeft(match.DidRadiantWin ? 23 : 26) + "`"
                 + " - " + GetEmote("Radiant"),
                 "‎ ",

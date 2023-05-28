@@ -3,6 +3,7 @@ using Discord;
 using Discord.Addons.Hosting;
 using Discord.Commands;
 using Discord.WebSocket;
+using DiscordHosted;
 using Services;
 
 var host = Host.CreateDefaultBuilder(args)
@@ -23,14 +24,12 @@ var host = Host.CreateDefaultBuilder(args)
     })
     .ConfigureServices((context, services) =>
     {
-        //Add any other services here
-        //services.AddHostedService<CommandHandler>();
-        //services.AddHostedService<InteractionHandler>();
-        //services.AddHostedService<BotStatusService>();
-        //services.AddHostedService<LongRunningService>();
         services.AddHostedService<MatchProcessor>();
-        services.AddSingleton<IStratzClient, StratzClient>();
-        services.AddSingleton<IMessageService, MessageService>();
+        services.AddScoped<IStratzClient, StratzClient>();
+        services.AddScoped<IMessageService, MessageService>();
+        services.AddScoped<IMatchDataService, MatchIdDataService>();
+        services.AddScoped<ISubscriberDataService, SubscriberDataService>();
+        services.AddHostedService<InteractionHandler>();
     }).Build();
 
 await host.RunAsync();
