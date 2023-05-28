@@ -1,16 +1,8 @@
 ﻿using Contracts;
-using Discord.Rest;
 using Entities.Models;
 using GraphQL;
 using GraphQL.Client.Http;
 using GraphQL.Client.Serializer.SystemTextJson;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Sockets;
-using System.Reflection.Metadata.Ecma335;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Services
 {
@@ -51,7 +43,7 @@ namespace Services
                     .Where(m => m.ParsedDateTime is not null)
                     .Select(m => new { matchId = m.Id, playerId = p.SteamAccountId }));
 
-            return subs.Select(s => 
+            return subs.Select(s =>
                 new ChannelMatchesIds
                 {
                     ChannelId = s.ChannelId,
@@ -132,7 +124,7 @@ namespace Services
             var response = (await _client.SendQueryAsync<PlayerCheckData>(playerRequest)).Data.Player;
             var lastMatchDate = DateTimeOffset.FromUnixTimeSeconds(response.lastMatchDate ?? 0);
 
-            return !response.steamAccount.isAnonymous 
+            return !response.steamAccount.isAnonymous
                 && lastMatchDate > (DateTime.Now - TimeSpan.FromDays(180));
         }
     }

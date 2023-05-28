@@ -91,7 +91,7 @@ namespace Services
         {
             using (var scope = _serviceProvider.CreateAsyncScope())
             {
-                var previouslyParsedMatches = await scope.ServiceProvider.GetRequiredService<IMatchDataService>().GetMatches();                
+                var previouslyParsedMatches = await scope.ServiceProvider.GetRequiredService<IMatchDataService>().GetMatches();
 
                 var matches = await scope.ServiceProvider.GetRequiredService<IStratzClient>().GetLastMatchesIdsAsync(subs);
 

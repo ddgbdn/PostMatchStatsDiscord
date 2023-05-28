@@ -1,11 +1,6 @@
 ﻿using Contracts;
 using Entities.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Text.Json;
-using System.Threading.Tasks;
 
 namespace Services
 {
@@ -26,8 +21,8 @@ namespace Services
             {
                 var existingChannel = allMatches.FirstOrDefault(s => s.ChannelId == match.ChannelId);
 
-                if (existingChannel != null)                
-                    existingChannel.Matches = existingChannel.Matches.Concat(match.Matches);                
+                if (existingChannel != null)
+                    existingChannel.Matches = existingChannel.Matches.Concat(match.Matches);
                 else
                     allMatches.Add(match);
             }

@@ -44,13 +44,13 @@ namespace Services
                 else
                     allSubs.Add(newSubscriber);
 
-                await matchService.AddMatches(new ChannelMatchesIds[] 
+                await matchService.AddMatches(new ChannelMatchesIds[]
                 {
-                    new ChannelMatchesIds 
-                    { 
+                    new ChannelMatchesIds
+                    {
                         ChannelId = newSubscriber.ChannelId,
                         Matches = Enumerable.Empty<long>()
-                    } 
+                    }
                 });
 
                 var subsUtf8 = JsonSerializer.SerializeToUtf8Bytes(allSubs);

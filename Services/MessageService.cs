@@ -1,14 +1,8 @@
 ﻿using Contracts;
 using Discord;
-using Discord.Rest;
 using Discord.WebSocket;
 using Entities.Models;
-using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Services
 {

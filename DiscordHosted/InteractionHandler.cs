@@ -1,15 +1,8 @@
-﻿using Discord.Addons.Hosting;
+﻿using Discord;
+using Discord.Addons.Hosting;
+using Discord.Addons.Hosting.Util;
 using Discord.Interactions;
 using Discord.WebSocket;
-using Discord;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
-using Discord.Addons.Hosting.Util;
 
 namespace DiscordHosted
 {
@@ -54,7 +47,7 @@ namespace DiscordHosted
 
         private Task SlashCommandExecuted(SlashCommandInfo commandInfo, IInteractionContext context, IResult result)
             => Task.CompletedTask;
-        
+
         private async Task HandleInteraction(SocketInteraction arg)
         {
             try

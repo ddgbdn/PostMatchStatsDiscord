@@ -1,7 +1,6 @@
 using Contracts;
 using Discord;
 using Discord.Addons.Hosting;
-using Discord.Commands;
 using Discord.WebSocket;
 using DiscordHosted;
 using Services;
