@@ -10,7 +10,7 @@ namespace Entities.Models
     public class PreflightMatchId
     {
         [JsonPropertyName("players")]
-        public PlayerSteam[] Players { get; set; }
+        public PlayerSteam[] Players { get; set; } = null!;
     }
 
     public class PlayerSteam
@@ -19,7 +19,7 @@ namespace Entities.Models
         public long SteamAccountId { get; set; }
 
         [JsonPropertyName("matches")]
-        public Match[] Matches { get; set; }
+        public Match[] Matches { get; set; } = null!;
     }
 
     public class Match

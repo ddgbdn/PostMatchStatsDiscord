@@ -16,7 +16,7 @@ namespace Entities.Models
         public bool IsRadiant { get; set; }
 
         [JsonPropertyName("hero")]
-        public Hero Hero { get; set; }
+        public Hero Hero { get; set; } = null!;
 
         [JsonPropertyName("kills")]
         public int Kills { get; set; }
