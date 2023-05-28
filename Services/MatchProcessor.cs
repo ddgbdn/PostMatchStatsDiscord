@@ -1,74 +1,110 @@
 ﻿using Contracts;
 using Discord.Addons.Hosting;
 using Discord.Addons.Hosting.Util;
-using Discord.Commands;
 using Discord.WebSocket;
 using Entities.Models;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Services
 {
     public class MatchProcessor : DiscordClientService
     {
-        private readonly IServiceProvider _provider;
-        private readonly IStratzClient _stratzClient;
-        private readonly IMessageService _messageService;
+        private readonly IServiceProvider _serviceProvider;
 
         public MatchProcessor(
             DiscordSocketClient client,
-            IServiceProvider provider,
-            ILogger<DiscordClientService> logger,
-            IStratzClient stratzClient,
-            IMessageService messageService) : base(client, logger)
+            IServiceProvider serviceProvider,
+            ILogger<DiscordClientService> logger
+            ) : base(client, logger)
         {
-            _provider = provider;
-            _stratzClient = stratzClient;
-            _messageService = messageService;
+            _serviceProvider = serviceProvider;
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
             await Client.WaitForReadyAsync(stoppingToken);
 
-            using PeriodicTimer timer = new(TimeSpan.FromMinutes(1));
+            using PeriodicTimer timer = new(TimeSpan.FromMinutes(3));
 
             while (await timer.WaitForNextTickAsync(stoppingToken))
             {
-                var channelMatchesToProcess = await _stratzClient.GetLastMatchesIdsAsync(
-                    new ChannelSubscribers[] 
-                    {
-                        new ChannelSubscribers 
-                        {
-                            ChannelId = 1104500906621415606, 
-                            Subscribers = new long[] { 236888270 } 
-                        } 
-                    }); // Fill with actual data
+                IEnumerable<ChannelSubscribers> subs;
+                using (var scope = _serviceProvider.CreateAsyncScope())
+                {
+                    subs = await scope.ServiceProvider.GetRequiredService<ISubscriberDataService>().GetSubscribers();
+                }
 
-                var matchesToPost = await Task.WhenAll(
-                    channelMatchesToProcess
-                        .Select(async c => new ChannelMatches
-                        {
-                            ChannelId = c.ChannelId,
-                            Matches = await Task.WhenAll(c.Matches
-                                .Select(async m => await _stratzClient.GetMatchByIdAsync(m)))
-                        }));
+                var channelMatchesToProcess = await GetMatchesForChannels(subs);
 
-                await Task.WhenAll(matchesToPost
-                    .Select(async c => await Task.WhenAll(c.Matches
-                        .Select(async m => await _messageService.SendMessage(m, c.ChannelId)))));
+                var matchesToPost = await GetMatchStatsForChannels(channelMatchesToProcess);
+
+                await PostMatches(matchesToPost);
             }
 
             while (!stoppingToken.IsCancellationRequested)
             {
                 Logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
                 await Task.Delay(1000, stoppingToken);
+            }
+        }
+
+        private async Task PostMatches(IEnumerable<ChannelMatches> matchesToPost)
+        {
+            using (var scope = _serviceProvider.CreateAsyncScope())
+            {
+                var messageService = scope.ServiceProvider.GetRequiredService<IMessageService>();
+
+                await Task.WhenAll(matchesToPost
+                        .Select(async c => await Task.WhenAll(c.Matches
+                            .Select(async m => await messageService.SendMessage(m, c.ChannelId)))));
+
+                var matchDataService = scope.ServiceProvider.GetRequiredService<IMatchDataService>();
+
+                await matchDataService.AddMatches(matchesToPost.Select(m =>
+                    new ChannelMatchesIds
+                    {
+                        ChannelId = m.ChannelId,
+                        Matches = m.Matches.Select(s => s.Id)
+                    }));
+            }
+        }
+
+
+        private async Task<IEnumerable<ChannelMatches>> GetMatchStatsForChannels(IEnumerable<ChannelMatchesIds> channelMatchesToProcess)
+        {
+            using (var scope = _serviceProvider.CreateAsyncScope())
+            {
+                var stratzClient = scope.ServiceProvider.GetRequiredService<IStratzClient>();
+
+                return await Task.WhenAll(channelMatchesToProcess
+                    .Select(async c => new ChannelMatches
+                    {
+                        ChannelId = c.ChannelId,
+                        Matches = await Task.WhenAll(c.Matches
+                            .Select(async m => await stratzClient.GetMatchByIdAsync(m)))
+                    }));
+            }
+        }
+
+        private async Task<IEnumerable<ChannelMatchesIds>> GetMatchesForChannels(IEnumerable<ChannelSubscribers> subs)
+        {
+            using (var scope = _serviceProvider.CreateAsyncScope())
+            {
+                var previouslyParsedMatches = await scope.ServiceProvider.GetRequiredService<IMatchDataService>().GetMatches();                
+
+                var matches = await scope.ServiceProvider.GetRequiredService<IStratzClient>().GetLastMatchesIdsAsync(subs);
+
+                var result = new List<ChannelMatchesIds>();
+
+                foreach (var match in matches)
+                {
+                    var channel = previouslyParsedMatches.Single(p => p.ChannelId == match.ChannelId);
+                    var nonRepeatingMatches = match.Matches.Where(m => !channel.Matches.Contains(m));
+                    result.Add(new ChannelMatchesIds { ChannelId = match.ChannelId, Matches = nonRepeatingMatches });
+                }
+
+                return result;
             }
         }
     }

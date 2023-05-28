@@ -11,6 +11,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DiscordHosted", "DiscordHos
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Contracts", "Contracts\Contracts.csproj", "{46BD9C6C-A8B0-4DEB-A4DC-2576C0E71D59}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Modules", "Modules\Modules.csproj", "{B08F72AB-DDDF-4E15-BF04-3245E9867EEF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "Tests\Tests.csproj", "{B405B37C-93CB-4591-8AB9-4886EF43686F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +37,14 @@ Global
 		{46BD9C6C-A8B0-4DEB-A4DC-2576C0E71D59}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{46BD9C6C-A8B0-4DEB-A4DC-2576C0E71D59}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{46BD9C6C-A8B0-4DEB-A4DC-2576C0E71D59}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B08F72AB-DDDF-4E15-BF04-3245E9867EEF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B08F72AB-DDDF-4E15-BF04-3245E9867EEF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B08F72AB-DDDF-4E15-BF04-3245E9867EEF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B08F72AB-DDDF-4E15-BF04-3245E9867EEF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B405B37C-93CB-4591-8AB9-4886EF43686F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B405B37C-93CB-4591-8AB9-4886EF43686F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B405B37C-93CB-4591-8AB9-4886EF43686F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B405B37C-93CB-4591-8AB9-4886EF43686F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -109,5 +109,31 @@ namespace Services
 
             return (await _client.SendQueryAsync<MatchData>(statRequest)).Data.Match;
         }
+
+        public async Task<bool> ValidatePLayer(long id)
+        {
+            var playerRequest = new GraphQLRequest
+            {
+                Query = $@"
+                query CheckPlayer($playerId: Long!){{
+                  player(steamAccountId: $playerId){{
+                    steamAccount {{
+                      isAnonymous
+                    }}
+                    lastMatchDate
+                  }}
+                }}",
+                Variables = new
+                {
+                    playerId = id
+                }
+            };
+
+            var response = (await _client.SendQueryAsync<PlayerCheckData>(playerRequest)).Data.Player;
+            var lastMatchDate = DateTimeOffset.FromUnixTimeSeconds(response.lastMatchDate ?? 0);
+
+            return !response.steamAccount.isAnonymous 
+                && lastMatchDate > (DateTime.Now - TimeSpan.FromDays(180));
+        }
     }
 }
